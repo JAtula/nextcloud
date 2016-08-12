@@ -1,2 +1,4 @@
 docker-compose.yml
 supervisor.conf
+data
+perm.sh
