@@ -1,31 +1,60 @@
-FROM ubuntu:14.04
-MAINTAINER Juhani Atula
+FROM php:5.6-apache
 
-# Install packages
-RUN apt-get -qq update && apt-get -qq install -y apache2 libapache2-mod-php5 \
-wget bzip2 php5-gd php5-json php5-mysql php5-curl \
-php5-intl php5-mcrypt php5-imagick
+RUN apt-get update && apt-get install -y \
+	wget \
+	bzip2 \
+	libcurl4-openssl-dev \
+	libfreetype6-dev \
+	libicu-dev \
+	libjpeg-dev \
+	libldap2-dev \
+	libmcrypt-dev \
+	libmemcached-dev \
+	libpng12-dev \
+	libpq-dev \
+	libxml2-dev \
+	&& rm -rf /var/lib/apt/lists/*
 
-# Set workdir
-WORKDIR /workdir
+RUN docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
+	&& docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
+	&& docker-php-ext-install exif gd intl ldap mbstring mcrypt mysql opcache pdo_mysql pdo_pgsql pgsql zip
 
-#Untar tarball and copy conf-file
-RUN wget -q https://download.nextcloud.com/server/daily/latest.tar.bz2 \
-&& tar -xvjf latest.tar.bz2 -C /var/www \
-&& chown -R www-data:www-data /var/www/nextcloud
-COPY nextcloud.conf /etc/apache2/sites-available/nextcloud.conf
+# set recommended PHP.ini settings
+# see https://secure.php.net/manual/en/opcache.installation.php
+RUN { \
+		echo 'opcache.memory_consumption=128'; \
+		echo 'opcache.interned_strings_buffer=8'; \
+		echo 'opcache.max_accelerated_files=4000'; \
+		echo 'opcache.revalidate_freq=60'; \
+		echo 'opcache.fast_shutdown=1'; \
+		echo 'opcache.enable_cli=1'; \
+	} > /usr/local/etc/php/conf.d/opcache-recommended.ini
+RUN a2enmod rewrite
 
-#Configure apache depencies
-RUN a2enmod rewrite \
-headers \
-env \
-dir \
-mime \
-&& a2dissite 000-default.conf \
-&& a2ensite nextcloud.conf \
-&& service apache2 restart
+# PECL extensions
+RUN set -ex \
+	&& pecl install APCu-4.0.10 \
+	&& pecl install memcached-2.2.0 \
+	&& pecl install redis-2.2.8 \
+	&& docker-php-ext-enable apcu memcached redis
 
-#Expose 80 and run Apache
-EXPOSE 80
+ENV NEXTCLOUD_VERSION 9.0.53
+VOLUME /var/www/html
 
-CMD ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
+RUN curl -fsSL -o nextcloud.tar.bz2 \
+		"https://download.nextcloud.com/server/releases/nextcloud-${NEXTCLOUD_VERSION}.tar.bz2" \
+	&& curl -fsSL -o nextcloud.tar.bz2.asc \
+		"https://download.nextcloud.com/server/releases/nextcloud-${NEXTCLOUD_VERSION}.tar.bz2.asc" \
+	&& export GNUPGHOME="$(mktemp -d)" \
+# gpg key from https://nextcloud.com/nextcloud.asc \
+	&& wget https://nextcloud.com/nextcloud.asc \
+	&& gpg --import nextcloud.asc \
+	&& gpg --verify nextcloud.tar.bz2.asc nextcloud.tar.bz2 \
+	&& rm -r "$GNUPGHOME" nextcloud.tar.bz2.asc \
+	&& tar -xjf nextcloud.tar.bz2 -C /usr/src/ \
+	&& rm nextcloud.tar.bz2
+
+COPY docker-entrypoint.sh /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["apache2-foreground"]
