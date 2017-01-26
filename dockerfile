@@ -1,4 +1,4 @@
-FROM php:5.6-apache
+FROM php:7.1-apache
 
 RUN apt-get update && apt-get install -y \
 	wget \
@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y \
 
 RUN docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
 	&& docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
-	&& docker-php-ext-install exif gd intl ldap mbstring mcrypt mysql opcache pdo_mysql pdo_pgsql pgsql zip
+	&& docker-php-ext-install exif gd intl ldap mbstring mcrypt mysqli opcache pdo_mysql pdo_pgsql pgsql zip
 
 # set recommended PHP.ini settings
 # see https://secure.php.net/manual/en/opcache.installation.php
@@ -33,12 +33,13 @@ RUN a2enmod rewrite
 
 # PECL extensions
 RUN set -ex \
-	&& pecl install APCu-4.0.10 \
-	&& pecl install memcached-2.2.0 \
-	&& pecl install redis-2.2.8 \
-	&& docker-php-ext-enable apcu memcached redis
+	&& pecl install APCu-5.1.8 \
+#	&& pecl install memcached-2.2.0 \
+	&& pecl install redis-3.1.1RC2 \
+#	&& docker-php-ext-enable apcu memcached redis
+	&& docker-php-ext-enable apcu redis
 
-ENV NEXTCLOUD_VERSION 10.0.1
+ENV NEXTCLOUD_VERSION 11.0.1
 VOLUME /var/www/html
 
 RUN curl -fsSL -o nextcloud.tar.bz2 \

@@ -1,15 +1,15 @@
 nextcloud:
-  image: jatula/nextcloud:10.0.1
+  image: jatula/nextcloud:11.0.1
   links:
     - db_nextcloud:db_nextcloud
   volumes:
-    - /Users/atulaju9/demoes/docker/nextcloud/data:/var/www/html
+    - data:/var/www/html
   ports:
-    - "80:80"
+    - "8080:80"
 db_nextcloud:
   image: mariadb:10
   volumes:
-    - /Users/atulaju9/demoes/docker/nextcloud/db_data:/var/lib/mysql
+    - db_data:/var/lib/mysql
   environment:
     - MYSQL_ROOT_PASSWORD=Ahteri600
     - MYSQL_DATABASE=nextcloud
