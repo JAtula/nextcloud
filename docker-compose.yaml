@@ -11,7 +11,7 @@ db_nextcloud:
   volumes:
     - db_data:/var/lib/mysql
   environment:
-    - MYSQL_ROOT_PASSWORD=Ahteri600
+    - MYSQL_ROOT_PASSWORD=password
     - MYSQL_DATABASE=nextcloud
     - MYSQL_USER=nextcloud
-    - MYSQL_PASSWORD=Ahteri600
+    - MYSQL_PASSWORD=password
