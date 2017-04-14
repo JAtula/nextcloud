@@ -5,13 +5,13 @@
 
 1. **Download and start the Nextcloud server instance**
 ```
-docker pull jatula/nextcloud:11.0.1
-docker run --name nc -p 8080:80 -d jatula/nextcloud:11.0.1
+docker pull jatula/nextcloud:11.0.2
+docker run --name nc -p 8080:80 -d jatula/nextcloud:11.0.2
 
 ```
 2. **Access your Nextcloud server**
 
-Point your web browser to http://localhost
+Point your web browser to http://localhost:8080
 Note: If you're on MacOS or Windows you can't use "localhost" here. Run docker-machine ip default to figure out what you should use in place of localhost.
 
 3. **Setup nextcloud**

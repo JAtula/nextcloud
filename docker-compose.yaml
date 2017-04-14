@@ -1,5 +1,5 @@
 nextcloud:
-  image: jatula/nextcloud:11.0.1
+  image: jatula/nextcloud:11.0.2
   links:
     - db_nextcloud:db_nextcloud
   volumes:

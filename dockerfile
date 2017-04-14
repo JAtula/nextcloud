@@ -1,4 +1,4 @@
-FROM php:7.0-apache
+FROM php:7.1-apache
 
 RUN apt-get update && apt-get install -y \
 	wget \
@@ -35,11 +35,11 @@ RUN a2enmod rewrite
 RUN set -ex \
 	&& pecl install APCu-5.1.8 \
 #	&& pecl install memcached-2.2.0 \
-	&& pecl install redis-3.1.1RC2 \
+	&& pecl install redis-3.1.2 \
 #	&& docker-php-ext-enable apcu memcached redis
 	&& docker-php-ext-enable apcu redis
 
-ENV NEXTCLOUD_VERSION 11.0.1
+ENV NEXTCLOUD_VERSION 11.0.2
 VOLUME /var/www/html
 
 RUN curl -fsSL -o nextcloud.tar.bz2 \
