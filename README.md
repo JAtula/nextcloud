@@ -18,13 +18,17 @@ Note: If you're on MacOS or Windows you can't use "localhost" here. Run docker-m
 
 Follow the instructions in your browser to perform the initial setup of your server.
 
-4. **Stop the server instance**
+4. **Update nextcloud**
+
+Remove version.php file from your Nextcloud data folder. Stop the Nextcloud container and update the image tag to the latest version. Start your Nextcloud container and browse to your Nextcloud portal and "start update".
+
+5. **Stop the server instance**
 ```
 docker stop nc
 ``` 
 You can restart the container later with docker start nc
 
-5. **Delete the server instance**
+6. **Delete the server instance**
 ```
 docker rm nc
 ```
