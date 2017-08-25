@@ -34,12 +34,12 @@ RUN a2enmod rewrite
 # PECL extensions
 RUN set -ex \
 	&& pecl install APCu-5.1.8 \
-#	&& pecl install memcached-2.2.0 \
-	&& pecl install redis-3.1.2 \
+#	&& pecl install memcached-3.0.3 \
+	&& pecl install redis-3.1.3 \
 #	&& docker-php-ext-enable apcu memcached redis
 	&& docker-php-ext-enable apcu redis
 
-ENV NEXTCLOUD_VERSION 11.0.2
+ENV NEXTCLOUD_VERSION 12.0.2
 VOLUME /var/www/html
 
 RUN curl -fsSL -o nextcloud.tar.bz2 \
