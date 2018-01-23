@@ -5,8 +5,8 @@
 
 1. **Download and start the Nextcloud server instance**
 ```
-docker pull jatula/nextcloud:11.0.2
-docker run --name nc -p 8080:80 -d jatula/nextcloud:11.0.2
+docker pull jatula/nextcloud:12.0.4
+docker run --name nc -p 8080:80 -d jatula/nextcloud:12.0.4
 
 ```
 2. **Access your Nextcloud server**

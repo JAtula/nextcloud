@@ -24,8 +24,8 @@ RUN docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
 RUN { \
 		echo 'opcache.memory_consumption=128'; \
 		echo 'opcache.interned_strings_buffer=8'; \
-		echo 'opcache.max_accelerated_files=4000'; \
-		echo 'opcache.revalidate_freq=60'; \
+		echo 'opcache.max_accelerated_files=10000'; \
+		echo 'opcache.revalidate_freq=1'; \
 		echo 'opcache.fast_shutdown=1'; \
 		echo 'opcache.enable_cli=1'; \
 	} > /usr/local/etc/php/conf.d/opcache-recommended.ini
@@ -33,13 +33,13 @@ RUN a2enmod rewrite
 
 # PECL extensions
 RUN set -ex \
-	&& pecl install APCu-5.1.8 \
+	&& pecl install APCu-5.1.9 \
 #	&& pecl install memcached-3.0.3 \
-	&& pecl install redis-3.1.3 \
+	&& pecl install redis-3.1.6 \
 #	&& docker-php-ext-enable apcu memcached redis
 	&& docker-php-ext-enable apcu redis
 
-ENV NEXTCLOUD_VERSION 12.0.2
+ENV NEXTCLOUD_VERSION 12.0.4
 VOLUME /var/www/html
 
 RUN curl -fsSL -o nextcloud.tar.bz2 \
